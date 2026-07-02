@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.3.10'
+    id 'fabric-loom' version '1.2.6'
     id 'maven-publish'
 }
 
@@ -12,28 +12,18 @@ base {
 
 repositories {
     maven { url = 'https://maven.fabricmc.net/' }
-    maven { url = 'https://masa.dy.fi/maven' }
-    flatDir { dirs 'libs' }
     mavenCentral()
 }
 
 dependencies {
-    // Minecraft
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-
-    // Fabric
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    // MaLiLib and Litematica from Masa's Maven
-    modCompileOnly "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version}:${project.malilib_version}"
-    modCompileOnly "fi.dy.masa.litematica:litematica-fabric-${project.minecraft_version}:${project.litematica_version}"
 }
 
 processResources {
     inputs.property "version", project.version
-
     filesMatching("fabric.mod.json") {
         expand "version": project.version
     }
@@ -45,7 +35,6 @@ tasks.withType(JavaCompile).configureEach {
 
 java {
     withSourcesJar()
-
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
@@ -62,7 +51,5 @@ publishing {
             from components.java
         }
     }
-
-    repositories {
-    }
+    repositories {}
 }
