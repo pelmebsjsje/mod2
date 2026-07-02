@@ -12,6 +12,7 @@ base {
 
 repositories {
     maven { url = 'https://maven.fabricmc.net/' }
+    maven { url = 'https://masa.dy.fi/maven' }
     mavenCentral()
 }
 
@@ -24,15 +25,9 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    // Локальные библиотеки
-    modCompileOnly files("libs/malilib.jar")
-    modCompileOnly files("libs/litematica.jar")
-    modCompileOnly files("libs/baritone-api.jar")
-
-    // Чтобы они были доступны во время запуска из IDE
-    modRuntimeOnly files("libs/malilib.jar")
-    modRuntimeOnly files("libs/litematica.jar")
-    modRuntimeOnly files("libs/baritone-api.jar")
+    // MaLiLib and Litematica from Masa's Maven
+    modCompileOnly "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version}:${project.malilib_version}"
+    modCompileOnly "fi.dy.masa.litematica:litematica-fabric-${project.minecraft_version}:${project.litematica_version}"
 }
 
 processResources {
