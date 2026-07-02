@@ -11,7 +11,8 @@ base {
 }
 
 repositories {
-    maven { url 'https://maven.masa.tech' }          // Litematica / MaLiLib (masa's maven)
+    maven { url 'https://maven.fabricmc.net/' }       // Fabric Loader / Fabric API
+    maven { url 'https://maven.masa.tech' }           // Litematica / MaLiLib (masa's maven)
     maven { url 'https://jitpack.io' }                // Baritone (через jitpack)
     mavenCentral()
 }
