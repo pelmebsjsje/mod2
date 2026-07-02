@@ -12,7 +12,15 @@ base {
 
 repositories {
     maven { url 'https://maven.fabricmc.net/' }       // Fabric Loader / Fabric API
-    maven { url 'https://masa.dy.fi/maven' }           // Litematica / MaLiLib (masa's maven)           // Litematica / MaLiLib (masa's maven)
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter { includeGroup "maven.modrinth" }
+    }                                                   // Litematica / MaLiLib теперь раздаются только через Modrinth
     maven { url 'https://jitpack.io' }                // Baritone (через jitpack)
     mavenCentral()
 }
@@ -23,22 +31,13 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    // MaLiLib — обязательная зависимость Litematica
-    modImplementation "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version}:${project.malilib_version}"
+    // MaLiLib — обязательная зависимость Litematica (раздаётся через Modrinth Maven)
+    modImplementation "maven.modrinth:malilib:${project.malilib_modrinth_version_id}"
 
-    // Litematica — берём как compile-time API, не бандлим в jar
-    modCompileOnly "fi.dy.masa.litematica:litematica-fabric-${project.minecraft_version}:${project.litematica_version}"
+    // Litematica — берём как compile-time API, не бандлим в jar (Modrinth Maven)
+    modCompileOnly "maven.modrinth:litematica:${project.litematica_modrinth_version_id}"
 
-    // Baritone API 1.15.0 (fabric, MC 1.21.6-1.21.8) — координаты в Maven Central/JitPack
-    // на момент написания не подтверждены (cabaletta/baritone не всегда публикует
-    // релизы под каждую версию туда сразу). Пока подключаем из присланного jar
-    // напрямую через flatDir, чтобы сборка гарантированно работала.
-    // Если найдёшь актуальный тег на JitPack (https://jitpack.io/#cabaletta/baritone),
-    // замени этот блок на:
-    //   modCompileOnly "com.github.cabaletta:baritone:${project.baritone_version}"
     modCompileOnly files("libs/baritone-api-fabric-1_15_0.jar")
-    // Baritone также должен физически лежать в mods/ рядом со сборкой мода в рантайме —
-    // modCompileOnly даёт только compile-time классы, не бандлит и не грузит его сам.
 }
 
 processResources {
