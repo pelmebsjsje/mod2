@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "litebuilder",
+  "version": "${version}",
+  "name": "LiteBuilder",
+  "description": "Автоматический бот-строитель по схематикам Litematica с использованием Baritone для навигации",
+  "authors": ["you"],
+  "contact": {},
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.example.litebuilder.LiteBuilderClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "fabric-api": "*",
+    "minecraft": "1.21.x",
+    "malilib": "*",
+    "litematica": "*",
+    "baritone": "*"
+  }
+}
