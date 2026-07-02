@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.7-SNAPSHOT'
+    id 'fabric-loom' version '1.7.4'
     id 'maven-publish'
 }
 
@@ -11,45 +11,62 @@ base {
 }
 
 repositories {
-    maven { url 'https://maven.fabricmc.net/' }       // Fabric Loader / Fabric API
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "Modrinth"
-                url = "https://api.modrinth.com/maven"
-            }
-        }
-        filter { includeGroup "maven.modrinth" }
-    }                                                   // Litematica / MaLiLib теперь раздаются только через Modrinth
-    maven { url 'https://jitpack.io' }                // Baritone (через jitpack)
+    maven { url = 'https://maven.fabricmc.net/' }
     mavenCentral()
 }
 
 dependencies {
+    // Minecraft
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+
+    // Fabric
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    // MaLiLib — обязательная зависимость Litematica (раздаётся через Modrinth Maven)
-    modImplementation "maven.modrinth:malilib:${project.malilib_modrinth_version_id}"
+    // Локальные библиотеки
+    modCompileOnly files("libs/malilib.jar")
+    modCompileOnly files("libs/litematica.jar")
+    modCompileOnly files("libs/baritone-api.jar")
 
-    // Litematica — берём как compile-time API, не бандлим в jar (Modrinth Maven)
-    modCompileOnly "maven.modrinth:litematica:${project.litematica_modrinth_version_id}"
-
-    modCompileOnly files("libs/baritone-api-fabric-1_15_0.jar")
+    // Чтобы они были доступны во время запуска из IDE
+    modRuntimeOnly files("libs/malilib.jar")
+    modRuntimeOnly files("libs/litematica.jar")
+    modRuntimeOnly files("libs/baritone-api.jar")
 }
 
 processResources {
     inputs.property "version", project.version
-    filteringCharset "UTF-8"
+
     filesMatching("fabric.mod.json") {
         expand "version": project.version
     }
 }
 
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+}
+
 java {
     withSourcesJar()
+
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.base.archivesName.get()}" }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+    }
 }
